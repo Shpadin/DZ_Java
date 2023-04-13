@@ -1,75 +1,43 @@
 
 public class task3 {
-    // Реализовать алгоритм пирамидальной сортировки (HeapSort).
-    
-    public static int LEFT(int i) {
-        return (2*i + 1);
-    }
- 
-   
-    public static int RIGHT(int i) {
-        return (2*i + 2);
-    }
- 
-    public static void swap(int[] arr, int i, int j)
-    {
-        int temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-    }
- 
-    public static void heapify(int[] arr, int i, int size)
-    {
-        int left = LEFT(i);
-        int right = RIGHT(i);
- 
-        int largest = i;
- 
-        if (left < size && arr[left] > arr[i]) {
-            largest = left;
-        }
- 
-        if (right < size && arr[right] > arr[largest]) {
-            largest = right;
-        }
-        if (largest != i)
-        {
-            swap(arr, i, largest);
-            heapify(arr, largest, size);
-        }
-    }
- 
-    public static int pop(int[] arr, int size)
-    {
-        if (size <= 0) {
-            return -1;
-        }
-        int top = arr[0];
-        arr[0] = arr[size-1];
-        heapify(arr, 0, size - 1);
- 
-        return top;
-    }
- 
-    public static void heapsort(int[] arr)
-    {
-        int n = arr.length;
-        int i = (n - 2) / 2;
-        while (i >= 0) {
-            heapify(arr, i--, n);
-        }
- 
-        while (n > 0)
-        {
-            arr[n - 1] = pop(arr, n);
-            n--;
+    public static void main(String[] args) {
+        int[] queens = new int[8];
+        findPosition(0, queens);
+
+        // Вывод доски в консоль
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (queens[row] == col) {
+                    System.out.print("X");
+                } else {
+                    System.out.print("o");
+                }
+            }
+            System.out.println();
         }
     }
 
-    
-    public static void main(String[] args) {
-        int[] listNum = new int [] {5, 2, 3, 8, 10, 5, -1};
-        heapsort(listNum);
-        for(int el: listNum) System.out.printf("%d ", el);
+    // Функция для поиска расстановки ферзей
+    private static boolean findPosition(int row, int[] queens) {
+        if (row == 8) { // Если удалось расставить всех 8 ферзей, вернуть true
+            return true;
+        }
+        for (int col = 0; col < 8; col++) {
+            boolean isSafe = true;
+            for (int i = 0; i < row; i++) {
+                // Проверка на наличие конфликта по вертикали, диагонали и антидиагонали
+                if (queens[i] == col || queens[i] == col - row + i || queens[i] == col + row - i) {
+                    isSafe = false;
+                    break;
+                }
+            }
+            if (isSafe) {
+                queens[row] = col; // Сохранить расстановку ферзя в массив
+                if (findPosition(row + 1, queens)) { // Рекурсивный вызов для следующего ряда
+                    return true;
+                }
+            }
+        }
+        return false;
     }
-    }
+}
